@@ -137,8 +137,6 @@ main (int argc, char **argv)
    * get the right behaviour.
    */
   g_setenv ("LIBOVERLAY_SCROLLBAR", "0", TRUE);
-  g_setenv ("UBUNTU_MENUPROXY", "0", TRUE);
-  g_setenv ("NO_UNITY_GTK_MODULE", "1", TRUE);
 #endif
 #endif
 
