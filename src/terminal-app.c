@@ -347,8 +347,10 @@ terminal_app_update_profile_menus (TerminalApp *app)
   gs_unref_object GMenuItem *open_terminal;
   gs_unref_object GMenuItem *set_profile = NULL;
   GMenuModel *menubar;
+  GMenuModel *popup;
   gs_unref_object GMenu *new_terminal_section;
   gs_unref_object GMenu *set_profile_section;
+  gs_unref_object GMenu *popup_set_profile_section;
 
   menubar = gtk_application_get_menubar (GTK_APPLICATION (app));
   if (menubar == NULL)
@@ -356,10 +358,13 @@ terminal_app_update_profile_menus (TerminalApp *app)
 
   profiles = terminal_profiles_list_ref_children_sorted (app->profiles_list);
 
+  popup = G_MENU_MODEL (gtk_application_get_menu_by_id (GTK_APPLICATION (app), "popup"));
   new_terminal_section = G_MENU (menu_find_section (menubar, "new-terminal-section"));
   set_profile_section = G_MENU (menu_find_section (menubar, "set-profile-section"));
+  popup_set_profile_section = G_MENU (menu_find_section (popup, "set-profile-section"));
   g_menu_remove_all (new_terminal_section);
   g_menu_remove_all (set_profile_section);
+  g_menu_remove_all (popup_set_profile_section);
 
   open_terminal = g_menu_item_new (N_("Open _Terminal"), NULL);
 
@@ -409,6 +414,7 @@ terminal_app_update_profile_menus (TerminalApp *app)
 
       g_menu_item_set_link (open_terminal, G_MENU_LINK_SUBMENU, G_MENU_MODEL (open_terminal_submenu));
       g_menu_append_submenu (set_profile_section, N_("Change _Profile"), G_MENU_MODEL (set_profile_submenu));
+      g_menu_append_section (popup_set_profile_section, NULL, G_MENU_MODEL (set_profile_submenu));
     }
 
   g_menu_append_item (new_terminal_section, open_terminal);

@@ -288,4 +288,120 @@
       </section>
     </submenu>
   </menu>
+  <menu id="popup">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Send Mail To…</attribute>
+        <attribute name="action">win.open-email</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Copy E-mail Address</attribute>
+        <attribute name="action">win.copy-email</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">C_all To…</attribute>
+        <attribute name="action">win.open-call</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Copy Call Address</attribute>
+        <attribute name="action">win.copy-call</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Open Link</attribute>
+        <attribute name="action">win.open-url</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Copy Link Address</attribute>
+        <attribute name="action">win.copy-url</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Open _Terminal</attribute>
+        <attribute name="action">win.new-terminal</attribute>
+        <attribute name="target" type="(ss)">('default','default')</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Copy</attribute>
+        <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;C</attribute>
+        <attribute name="action">win.copy</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Paste</attribute>
+        <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;V</attribute>
+        <attribute name="action">win.paste</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Paste _Filenames</attribute>
+        <attribute name="action">win.paste-uri</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <submenu>
+        <attribute name="label" translatable="yes">P_rofiles</attribute>
+        <section>
+          <attribute name="id">set-profile-section</attribute>
+        </section>
+        <section>
+          <item>
+            <attribute name="label" translatable="yes">_Profile Preferences</attribute>
+            <attribute name="action">win.edit-profile</attribute>
+          </item>
+        </section>
+      </submenu>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Read-_Only</attribute>
+        <attribute name="action">win.read-only</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Show _Menubar</attribute>
+        <attribute name="action">win.show-menubar</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">L_eave Full Screen</attribute>
+        <attribute name="action">win.leave-fullscreen</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="notebook-popup">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Move Terminal _Left</attribute>
+        <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;Page_Up</attribute>
+        <attribute name="action">win.move-tab-left</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Move Terminal _Right</attribute>
+        <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;Page_Down</attribute>
+        <attribute name="action">win.move-tab-right</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">C_lose Terminal</attribute>
+        <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;W</attribute>
+        <attribute name="action">win.close</attribute>
+        <attribute name="target">tab</attribute>
+      </item>
+    </section>
+  </menu>
 </interface>

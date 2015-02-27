@@ -370,7 +370,6 @@ CLEANFILES = \
 
 EXTRA_DIST = \
 	terminal.about \
-	terminal.xml \
 	terminal-menus.ui \
 	terminal-window.ui \
 	terminal.gresource.xml \

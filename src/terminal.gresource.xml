@@ -17,7 +17,6 @@
 -->
 <gresources>
   <gresource prefix="/org/gnome/terminal">
-    <file alias="ui/terminal.xml" compressed="true" preprocess="xml-stripblanks">terminal.xml</file>
     <file alias="ui/terminal.about" compressed="true">terminal.about</file>
     <file alias="ui/find-dialog.ui" compressed="true" preprocess="xml-stripblanks">find-dialog.ui</file>
     <file alias="ui/preferences.ui" compressed="true" preprocess="xml-stripblanks">preferences.ui</file>
