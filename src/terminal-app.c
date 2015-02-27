@@ -251,6 +251,221 @@ terminal_app_encoding_list_notify_cb (GSettings   *settings,
   g_signal_emit (app, signals[ENCODING_LIST_CHANGED], 0);
 }
 
+static GMenuModel *
+menu_find_section (GMenuModel  *model,
+                   const gchar *section_id)
+{
+  gint n_items;
+  gint i;
+
+  n_items = g_menu_model_get_n_items (model);
+  for (i = 0; i < n_items; i++)
+    {
+      GMenuModel *section;
+
+      if ((section = g_menu_model_get_item_link (model, i, G_MENU_LINK_SECTION)) ||
+          (section = g_menu_model_get_item_link (model, i, G_MENU_LINK_SUBMENU)))
+        {
+          gs_free gchar *id = NULL;
+          GMenuModel *subsection;
+
+          if (g_menu_model_get_item_attribute (model, i, "id", "s", &id) && g_str_equal (id, section_id))
+            return section;
+
+          subsection = menu_find_section (section, section_id);
+
+          g_object_unref (section);
+          if (subsection)
+            return subsection;
+        }
+    }
+
+  return NULL;
+}
+
+static char *
+escape_underscores (const char *name)
+{
+  GString *escaped_name;
+
+  g_assert (name != NULL);
+
+  /* Who'd use more that 4 underscores in a profile name... */
+  escaped_name = g_string_sized_new (strlen (name) + 4 + 1);
+
+  while (*name)
+    {
+      if (*name == '_')
+        g_string_append (escaped_name, "__");
+      else
+        g_string_append_c (escaped_name, *name);
+      name++;
+    }
+
+  return g_string_free (escaped_name, FALSE);
+}
+
+static void
+menu_append_numbered (GMenu       *menu,
+                      const gchar *label,
+                      guint        num,
+                      const gchar *action_name,
+                      GVariant    *target)
+{
+  GMenuItem *item;
+  gs_free gchar *escaped;
+  gs_free gchar *display;
+
+  escaped = escape_underscores (label);
+
+  if (num < 10)
+    /* Translators: This is the label of a menu item to choose a profile.
+     * _%u is used as the accelerator (with u between 1 and 9), and
+     * the %s is the name of the terminal profile.
+     */
+    display = g_strdup_printf (_("_%u. %s"), num, escaped);
+  else if (num < 36)
+    /* Translators: This is the label of a menu item to choose a profile.
+     * _%c is used as the accelerator (it will be a character between A and Z),
+     * and the %s is the name of the terminal profile.
+     */
+    display = g_strdup_printf (_("_%c. %s"), (guchar)('A' + num - 10), escaped);
+  else
+    display = g_strdup (escaped);
+
+  item = g_menu_item_new (display, NULL);
+  g_menu_item_set_action_and_target_value (item, action_name, target);
+  g_menu_append_item (menu, item);
+
+  g_object_unref (item);
+}
+
+static void
+terminal_app_update_profile_menus (TerminalApp *app)
+{
+  GList *profiles;
+  gs_unref_object GMenuItem *open_terminal;
+  gs_unref_object GMenuItem *set_profile = NULL;
+  GMenuModel *menubar;
+  gs_unref_object GMenu *new_terminal_section;
+  gs_unref_object GMenu *set_profile_section;
+
+  menubar = gtk_application_get_menubar (GTK_APPLICATION (app));
+  if (menubar == NULL)
+    return;
+
+  profiles = terminal_profiles_list_ref_children_sorted (app->profiles_list);
+
+  new_terminal_section = G_MENU (menu_find_section (menubar, "new-terminal-section"));
+  set_profile_section = G_MENU (menu_find_section (menubar, "set-profile-section"));
+  g_menu_remove_all (new_terminal_section);
+  g_menu_remove_all (set_profile_section);
+
+  open_terminal = g_menu_item_new (N_("Open _Terminal"), NULL);
+
+  if (profiles == NULL)
+    {
+      g_menu_item_set_action_and_target (open_terminal, "win.new-terminal",
+                                         "(ss)", "default", "current");
+    }
+  else if (profiles->next == NULL)
+    {
+      gs_free gchar *uuid;
+
+      uuid = terminal_settings_list_dup_uuid_from_child (app->profiles_list, profiles->data);
+      g_menu_item_set_action_and_target (open_terminal, "win.new-terminal",
+                                         "(ss)", "default", uuid);
+    }
+  else
+    {
+      guint num;
+      GList *it;
+      gs_unref_object GMenu *open_terminal_submenu;
+      gs_unref_object GMenu *set_profile_submenu;
+
+      open_terminal_submenu = g_menu_new ();
+      set_profile_submenu = g_menu_new ();
+
+      for (it = profiles, num = 0; it; it = it->next, num++)
+        {
+          GSettings *profile = it->data;
+          gs_free gchar *visible_name;
+          gs_free gchar *uuid;
+
+          visible_name = g_settings_get_string (profile, TERMINAL_PROFILE_VISIBLE_NAME_KEY);
+          uuid = terminal_settings_list_dup_uuid_from_child (app->profiles_list, profile);
+
+          menu_append_numbered (open_terminal_submenu, visible_name, num, "win.new-terminal",
+                                g_variant_new ("(ss)", "default", uuid));
+          menu_append_numbered (set_profile_submenu, visible_name, num, "win.profile",
+                                g_variant_new_string (uuid));
+
+          /* only connect if we haven't seen this profile before */
+          if (g_signal_handler_find (profile, G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
+                                     0, 0, NULL, terminal_app_update_profile_menus, app) == 0)
+            g_signal_connect_swapped (profile, "changed::" TERMINAL_PROFILE_VISIBLE_NAME_KEY,
+                                      G_CALLBACK (terminal_app_update_profile_menus), app);
+        }
+
+      g_menu_item_set_link (open_terminal, G_MENU_LINK_SUBMENU, G_MENU_MODEL (open_terminal_submenu));
+      g_menu_append_submenu (set_profile_section, N_("Change _Profile"), G_MENU_MODEL (set_profile_submenu));
+    }
+
+  g_menu_append_item (new_terminal_section, open_terminal);
+
+  g_list_free_full (profiles, (GDestroyNotify) g_object_unref);
+}
+
+static void
+terminal_app_update_encodings_menu (TerminalApp *app)
+{
+  GMenuModel *menubar;
+  gs_unref_object GMenu *set_encoding_section = NULL;
+  GSList *encodings;
+  GSList *it;
+
+  menubar = gtk_application_get_menubar (GTK_APPLICATION (app));
+  if (menubar == NULL)
+    return;
+
+  set_encoding_section = G_MENU (menu_find_section (menubar, "set-encoding-section"));
+  g_menu_remove_all (set_encoding_section);
+
+  encodings = terminal_app_get_active_encodings (app);
+  for (it = encodings; it; it = it->next)
+    {
+      TerminalEncoding *e = it->data;
+      gs_free gchar *label;
+      gs_unref_object GMenuItem *item;
+
+      label = g_strdup_printf ("%s (%s)", e->name, terminal_encoding_get_charset (e));
+
+      item = g_menu_item_new (label, NULL);
+      g_menu_item_set_action_and_target (item, "win.encoding", "s", terminal_encoding_get_charset (e));
+
+      g_menu_append_item (set_encoding_section, item);
+    }
+
+  g_slist_free_full (encodings, (GDestroyNotify) terminal_encoding_unref);
+}
+
+static void
+terminal_app_update_tabs_menu (TerminalApp *app)
+{
+  GMenuModel *menubar;
+  GtkWindow *active_window;
+  gs_unref_object GMenu *tabs_section = NULL;
+
+  menubar = gtk_application_get_menubar (GTK_APPLICATION (app));
+  active_window = gtk_application_get_active_window (GTK_APPLICATION (app));
+  if (menubar == NULL || active_window == NULL)
+    return;
+
+  tabs_section = G_MENU (menu_find_section (menubar, "tabs-section"));
+  g_menu_remove_all (tabs_section);
+  g_menu_append_section (tabs_section, NULL, terminal_window_get_tabs_menu (TERMINAL_WINDOW (active_window)));
+}
+
 /* App menu callbacks */
 
 static void
@@ -332,6 +547,12 @@ terminal_app_startup (GApplication *application)
                                    app_menu_actions, G_N_ELEMENTS (app_menu_actions),
                                    application);
 
+  terminal_app_update_profile_menus (TERMINAL_APP (application));
+  terminal_app_update_encodings_menu (TERMINAL_APP (application));
+
+  g_signal_connect_swapped (application, "notify::active-window",
+                            G_CALLBACK (terminal_app_update_tabs_menu), application);
+
   _terminal_debug_print (TERMINAL_DEBUG_SERVER, "Startup complete\n");
 }
 
@@ -358,6 +579,8 @@ terminal_app_init (TerminalApp *app)
 
   /* Get the profiles */
   app->profiles_list = terminal_profiles_list_new ();
+  g_signal_connect_swapped (app->profiles_list, "children-changed",
+                            G_CALLBACK (terminal_app_update_profile_menus), app);
 
   /* Get the encodings */
   app->encodings = terminal_encodings_get_builtins ();
@@ -390,6 +613,9 @@ terminal_app_finalize (GObject *object)
 
   g_signal_handlers_disconnect_by_func (app->global_settings,
                                         G_CALLBACK (terminal_app_encoding_list_notify_cb),
+                                        app);
+  g_signal_handlers_disconnect_by_func (app->profiles_list,
+                                        G_CALLBACK (terminal_app_update_profile_menus),
                                         app);
   g_hash_table_destroy (app->encodings);
   g_hash_table_destroy (app->screen_map);
@@ -474,6 +700,12 @@ terminal_app_dbus_unregister (GApplication    *application,
 }
 
 static void
+terminal_app_real_encoding_list_changed (TerminalApp *app)
+{
+  terminal_app_update_encodings_menu (app);
+}
+
+static void
 terminal_app_class_init (TerminalAppClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -485,6 +717,8 @@ terminal_app_class_init (TerminalAppClass *klass)
   g_application_class->startup = terminal_app_startup;
   g_application_class->dbus_register = terminal_app_dbus_register;
   g_application_class->dbus_unregister = terminal_app_dbus_unregister;
+
+  klass->encoding_list_changed = terminal_app_real_encoding_list_changed;
 
   signals[ENCODING_LIST_CHANGED] =
     g_signal_new (I_("encoding-list-changed"),

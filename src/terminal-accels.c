@@ -156,23 +156,23 @@ static KeyEntry file_entries[] = {
 };
 
 static KeyEntry edit_entries[] = {
-  ENTRY (N_("Copy"),  KEY_COPY,  "copy",  NULL, NULL      ),
-  ENTRY (N_("Paste"), KEY_PASTE, "paste", "s",  "'normal'"),
+  ENTRY (N_("Copy"),  KEY_COPY,  "copy",  NULL, NULL),
+  ENTRY (N_("Paste"), KEY_PASTE, "paste", NULL, NULL),
 };
 
 static KeyEntry find_entries[] = {
-  ENTRY (N_("Find"),                 KEY_FIND,       "find", "s", "'find'"    ),
-  ENTRY (N_("Find Next"),            KEY_FIND_NEXT,  "find", "s", "'next'"    ),
-  ENTRY (N_("Find Previous"),        KEY_FIND_PREV,  "find", "s", "'previous'"),
-  ENTRY (N_("Clear Find Highlight"), KEY_FIND_CLEAR, "find", "s", "'clear'"   )
+  ENTRY (N_("Find"),                 KEY_FIND,       "find",          NULL, NULL),
+  ENTRY (N_("Find Next"),            KEY_FIND_NEXT,  "find-next",     NULL, NULL),
+  ENTRY (N_("Find Previous"),        KEY_FIND_PREV,  "find-previous", NULL, NULL),
+  ENTRY (N_("Clear Find Highlight"), KEY_FIND_CLEAR, "find-clear",    NULL, NULL)
 };
 
 static KeyEntry view_entries[] = {
   ENTRY (N_("Hide and Show toolbar"), KEY_TOGGLE_MENUBAR, "show-menubar", NULL, NULL),
   ENTRY (N_("Full Screen"),           KEY_FULL_SCREEN,    "fullscreen",   NULL, NULL),
-  ENTRY (N_("Zoom In"),               KEY_ZOOM_IN,        "zoom",         "i",  "1" ),
-  ENTRY (N_("Zoom Out"),              KEY_ZOOM_OUT,       "zoom",         "i",  "-1"),
-  ENTRY (N_("Normal Size"),           KEY_ZOOM_NORMAL,    "zoom",         "i",  "0" )
+  ENTRY (N_("Zoom In"),               KEY_ZOOM_IN,        "zoom-in",      NULL, NULL),
+  ENTRY (N_("Zoom Out"),              KEY_ZOOM_OUT,       "zoom-out",     NULL, NULL),
+  ENTRY (N_("Normal Size"),           KEY_ZOOM_NORMAL,    "zoom-normal",  NULL, NULL)
 };
 
 static KeyEntry terminal_entries[] = {
@@ -181,17 +181,17 @@ static KeyEntry terminal_entries[] = {
 };
 
 static KeyEntry tabs_entries[] = {
-  ENTRY (N_("Switch to Previous Terminal"), KEY_PREV_TAB,       "switch-tab", "i",  "-2"),
-  ENTRY (N_("Switch to Next Terminal"),     KEY_NEXT_TAB,       "switch-tab", "i",  "-1"),
-  ENTRY (N_("Move Terminal to the Left"),   KEY_MOVE_TAB_LEFT,  "move-tab",   "i",  "-1"),
-  ENTRY (N_("Move Terminal to the Right"),  KEY_MOVE_TAB_RIGHT, "move-tab",   "i",  "1" ),
-  ENTRY (N_("Detach Terminal"),             KEY_DETACH_TAB,     "detach-tab", NULL, NULL),
+  ENTRY (N_("Switch to Previous Terminal"), KEY_PREV_TAB,       "previous-tab",   NULL, NULL),
+  ENTRY (N_("Switch to Next Terminal"),     KEY_NEXT_TAB,       "next-tab",       NULL, NULL),
+  ENTRY (N_("Move Terminal to the Left"),   KEY_MOVE_TAB_LEFT,  "move-tab-left",  NULL, NULL),
+  ENTRY (N_("Move Terminal to the Right"),  KEY_MOVE_TAB_RIGHT, "move-tab-right", NULL, NULL),
+  ENTRY (N_("Detach Terminal"),             KEY_DETACH_TAB,     "detach-tab",     NULL, NULL),
 
 #define SWITCH_TAB_ENTRY(num) \
   ENTRY (NULL, \
          KEY_SWITCH_TAB_PREFIX # num, \
-         "switch-tab", \
-         "i", \
+         "active-tab", \
+         "u", \
          # num)
 
   SWITCH_TAB_ENTRY (1),  SWITCH_TAB_ENTRY (2),  SWITCH_TAB_ENTRY (3),  SWITCH_TAB_ENTRY (4),

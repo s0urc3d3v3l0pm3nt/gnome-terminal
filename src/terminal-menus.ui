@@ -45,4 +45,247 @@
       </item>
     </section>
   </menu>
+  <menu id="menubar">
+    <submenu>
+      <attribute name="label" translatable="yes">_File</attribute>
+      <section>
+        <attribute name="id">new-terminal-section</attribute>
+      </section>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">New _Profile</attribute>
+          <attribute name="action">win.new-profile</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_Save Contents</attribute>
+          <attribute name="action">win.save-contents</attribute>
+          <attribute name="hidden-when">action-missing</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">C_lose Terminal</attribute>
+          <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;W</attribute>
+          <attribute name="action">win.close</attribute>
+          <attribute name="target">tab</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_Close All Terminals</attribute>
+          <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;Q</attribute>
+          <attribute name="action">win.close</attribute>
+          <attribute name="target">window</attribute>
+        </item>
+      </section>
+    </submenu>
+    <submenu>
+      <attribute name="label" translatable="yes">_Edit</attribute>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">Copy</attribute>
+          <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;C</attribute>
+          <attribute name="action">win.copy</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Paste</attribute>
+          <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;V</attribute>
+          <attribute name="action">win.paste</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Paste _Filenames</attribute>
+          <attribute name="action">win.paste-uri</attribute>
+          <attribute name="hidden-when">action-disabled</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">Select All</attribute>
+          <attribute name="action">win.select-all</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">Pre_ferences</attribute>
+          <attribute name="action">app.preferences</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_Profile Preferences</attribute>
+          <attribute name="action">win.edit-profile</attribute>
+        </item>
+      </section>
+    </submenu>
+    <submenu>
+      <attribute name="label" translatable="yes">_View</attribute>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">Show _Menubar</attribute>
+          <attribute name="action">win.show-menubar</attribute>
+          <attribute name="hidden-when">action-disabled</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_Full Screen</attribute>
+          <attribute name="accel">F11</attribute>
+          <attribute name="action">win.fullscreen</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">Zoom In</attribute>
+          <attribute name="accel">&lt;ctrl&gt;plus</attribute>
+          <attribute name="action">win.zoom-in</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Zoom Out</attribute>
+          <attribute name="accel">&lt;ctrl&gt;minus</attribute>
+          <attribute name="action">win.zoom-out</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Normal Size</attribute>
+          <attribute name="accel">&lt;ctrl&gt;0</attribute>
+          <attribute name="action">win.zoom-normal</attribute>
+        </item>
+      </section>
+    </submenu>
+    <submenu>
+      <attribute name="label" translatable="yes">_Search</attribute>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">_Find…</attribute>
+          <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;F</attribute>
+          <attribute name="action">win.find</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Find Ne_xt</attribute>
+          <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;G</attribute>
+          <attribute name="action">win.find-next</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Find Pre_vious</attribute>
+          <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;H</attribute>
+          <attribute name="action">win.find-previous</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_Clear Highlight</attribute>
+          <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;J</attribute>
+          <attribute name="action">win.find-clear</attribute>
+        </item>
+      </section>
+    </submenu>
+    <submenu>
+      <attribute name="label" translatable="yes">_Terminal</attribute>
+      <section>
+        <section>
+          <attribute name="id">set-profile-section</attribute>
+        </section>
+        <submenu>
+          <attribute name="label" translatable="yes">Set _Character Encoding</attribute>
+          <section>
+            <attribute name="id">set-encoding-section</attribute>
+          </section>
+          <section>
+            <item>
+              <attribute name="label" translatable="yes">_Add or Remove…</attribute>
+              <attribute name="action">win.edit-encodings</attribute>
+            </item>
+          </section>
+        </submenu>
+      </section>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">Read-_Only</attribute>
+          <attribute name="action">win.read-only</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">_Reset</attribute>
+          <attribute name="action">win.reset</attribute>
+          <attribute name="target" type="b">false</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Reset and C_lear</attribute>
+          <attribute name="action">win.reset</attribute>
+          <attribute name="target" type="b">true</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">_1. 80×24</attribute>
+          <attribute name="action">win.size-to</attribute>
+          <attribute name="target" type="(uu)">(80, 24)</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_1. 80×43</attribute>
+          <attribute name="action">win.size-to</attribute>
+          <attribute name="target" type="(uu)">(80, 43)</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_1. 132×24</attribute>
+          <attribute name="action">win.size-to</attribute>
+          <attribute name="target" type="(uu)">(132, 24)</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_1. 132×42</attribute>
+          <attribute name="action">win.size-to</attribute>
+          <attribute name="target" type="(uu)">(132, 43)</attribute>
+        </item>
+      </section>
+    </submenu>
+    <submenu>
+      <attribute name="label" translatable="yes">Ta_bs</attribute>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">_Previous Terminal</attribute>
+          <attribute name="accel">&lt;ctrl&gt;Page_Up</attribute>
+          <attribute name="action">win.previous-tab</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_Next Terminal</attribute>
+          <attribute name="accel">&lt;ctrl&gt;Page_Down</attribute>
+          <attribute name="action">win.next-tab</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">Move Terminal _Left</attribute>
+          <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;Page_Up</attribute>
+          <attribute name="action">win.move-tab-left</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">Move Terminal _Right</attribute>
+          <attribute name="accel">&lt;shift&gt;&lt;ctrl&gt;Page_Down</attribute>
+          <attribute name="action">win.move-tab-right</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">_Detach Terminal</attribute>
+          <attribute name="action">win.detach-tab</attribute>
+        </item>
+      </section>
+      <section>
+        <attribute name="id">tabs-section</attribute>
+      </section>
+    </submenu>
+    <submenu>
+      <attribute name="label" translatable="yes">_Help</attribute>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">_Contents</attribute>
+          <attribute name="accel">F1</attribute>
+          <attribute name="action">win.help</attribute>
+        </item>
+        <item>
+          <attribute name="label" translatable="yes">_About</attribute>
+          <attribute name="action">win.about</attribute>
+        </item>
+      </section>
+      <section>
+        <item>
+          <attribute name="label" translatable="yes">_Inspector</attribute>
+          <attribute name="action">win.show-inspector</attribute>
+          <attribute name="hidden-when">action-missing</attribute>
+        </item>
+      </section>
+    </submenu>
+  </menu>
 </interface>

@@ -93,6 +93,8 @@ GtkActionGroup *terminal_window_get_main_action_group (TerminalWindow *window);
 
 const char *terminal_window_get_uuid (TerminalWindow *window);
 
+GMenuModel *terminal_window_get_tabs_menu (TerminalWindow *window);
+
 G_END_DECLS
 
 #endif /* TERMINAL_WINDOW_H */

@@ -71,8 +71,6 @@ gnome_terminal_server_SOURCES = \
 	terminal-search-dialog.h \
 	terminal-tab-label.c \
 	terminal-tab-label.h \
-	terminal-tabs-menu.c \
-	terminal-tabs-menu.h \
 	terminal-util.c \
 	terminal-util.h \
 	terminal-version.h \
