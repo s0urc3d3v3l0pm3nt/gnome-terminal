@@ -251,38 +251,6 @@ terminal_app_encoding_list_notify_cb (GSettings   *settings,
   g_signal_emit (app, signals[ENCODING_LIST_CHANGED], 0);
 }
 
-static GMenuModel *
-menu_find_section (GMenuModel  *model,
-                   const gchar *section_id)
-{
-  gint n_items;
-  gint i;
-
-  n_items = g_menu_model_get_n_items (model);
-  for (i = 0; i < n_items; i++)
-    {
-      GMenuModel *section;
-
-      if ((section = g_menu_model_get_item_link (model, i, G_MENU_LINK_SECTION)) ||
-          (section = g_menu_model_get_item_link (model, i, G_MENU_LINK_SUBMENU)))
-        {
-          gs_free gchar *id = NULL;
-          GMenuModel *subsection;
-
-          if (g_menu_model_get_item_attribute (model, i, "id", "s", &id) && g_str_equal (id, section_id))
-            return section;
-
-          subsection = menu_find_section (section, section_id);
-
-          g_object_unref (section);
-          if (subsection)
-            return subsection;
-        }
-    }
-
-  return NULL;
-}
-
 static char *
 escape_underscores (const char *name)
 {
@@ -347,10 +315,9 @@ terminal_app_update_profile_menus (TerminalApp *app)
   gs_unref_object GMenuItem *open_terminal;
   gs_unref_object GMenuItem *set_profile = NULL;
   GMenuModel *menubar;
-  GMenuModel *popup;
-  gs_unref_object GMenu *new_terminal_section;
-  gs_unref_object GMenu *set_profile_section;
-  gs_unref_object GMenu *popup_set_profile_section;
+  GMenu *new_terminal_section;
+  GMenu *set_profile_section;
+  GMenu *popup_set_profile_section;
 
   menubar = gtk_application_get_menubar (GTK_APPLICATION (app));
   if (menubar == NULL)
@@ -358,10 +325,9 @@ terminal_app_update_profile_menus (TerminalApp *app)
 
   profiles = terminal_profiles_list_ref_children_sorted (app->profiles_list);
 
-  popup = G_MENU_MODEL (gtk_application_get_menu_by_id (GTK_APPLICATION (app), "popup"));
-  new_terminal_section = G_MENU (menu_find_section (menubar, "new-terminal-section"));
-  set_profile_section = G_MENU (menu_find_section (menubar, "set-profile-section"));
-  popup_set_profile_section = G_MENU (menu_find_section (popup, "set-profile-section"));
+  new_terminal_section = gtk_application_get_menu_by_id (GTK_APPLICATION (app), "new-terminal-section");
+  set_profile_section = gtk_application_get_menu_by_id (GTK_APPLICATION (app), "set-profile-section");
+  popup_set_profile_section = gtk_application_get_menu_by_id (GTK_APPLICATION (app), "set-profile-section");
   g_menu_remove_all (new_terminal_section);
   g_menu_remove_all (set_profile_section);
   g_menu_remove_all (popup_set_profile_section);
@@ -426,7 +392,7 @@ static void
 terminal_app_update_encodings_menu (TerminalApp *app)
 {
   GMenuModel *menubar;
-  gs_unref_object GMenu *set_encoding_section = NULL;
+  GMenu *set_encoding_section = NULL;
   GSList *encodings;
   GSList *it;
 
@@ -434,7 +400,7 @@ terminal_app_update_encodings_menu (TerminalApp *app)
   if (menubar == NULL)
     return;
 
-  set_encoding_section = G_MENU (menu_find_section (menubar, "set-encoding-section"));
+  set_encoding_section = gtk_application_get_menu_by_id (GTK_APPLICATION (app), "set-encoding-section");
   g_menu_remove_all (set_encoding_section);
 
   encodings = terminal_app_get_active_encodings (app);
@@ -460,14 +426,14 @@ terminal_app_update_tabs_menu (TerminalApp *app)
 {
   GMenuModel *menubar;
   GtkWindow *active_window;
-  gs_unref_object GMenu *tabs_section = NULL;
+  GMenu *tabs_section = NULL;
 
   menubar = gtk_application_get_menubar (GTK_APPLICATION (app));
   active_window = gtk_application_get_active_window (GTK_APPLICATION (app));
   if (menubar == NULL || active_window == NULL)
     return;
 
-  tabs_section = G_MENU (menu_find_section (menubar, "tabs-section"));
+  tabs_section = gtk_application_get_menu_by_id (GTK_APPLICATION (app), "tabs-section");
   g_menu_remove_all (tabs_section);
   g_menu_append_section (tabs_section, NULL, terminal_window_get_tabs_menu (TERMINAL_WINDOW (active_window)));
 }

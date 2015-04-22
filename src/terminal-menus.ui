@@ -48,9 +48,7 @@
   <menu id="menubar">
     <submenu>
       <attribute name="label" translatable="yes">_File</attribute>
-      <section>
-        <attribute name="id">new-terminal-section</attribute>
-      </section>
+      <section id="new-terminal-section" />
       <section>
         <item>
           <attribute name="label" translatable="yes">New _Profile</attribute>
@@ -173,14 +171,10 @@
     <submenu>
       <attribute name="label" translatable="yes">_Terminal</attribute>
       <section>
-        <section>
-          <attribute name="id">set-profile-section</attribute>
-        </section>
+        <section id="set-profile-section" />
         <submenu>
           <attribute name="label" translatable="yes">Set _Character Encoding</attribute>
-          <section>
-            <attribute name="id">set-encoding-section</attribute>
-          </section>
+          <section id="set-encoding-section" />
           <section>
             <item>
               <attribute name="label" translatable="yes">_Add or Remove…</attribute>
@@ -262,9 +256,7 @@
           <attribute name="action">win.detach-tab</attribute>
         </item>
       </section>
-      <section>
-        <attribute name="id">tabs-section</attribute>
-      </section>
+      <section id="tabs-section" />
     </submenu>
     <submenu>
       <attribute name="label" translatable="yes">_Help</attribute>
@@ -352,9 +344,7 @@
     <section>
       <submenu>
         <attribute name="label" translatable="yes">P_rofiles</attribute>
-        <section>
-          <attribute name="id">set-profile-section</attribute>
-        </section>
+        <section id="set-profile-section" />
         <section>
           <item>
             <attribute name="label" translatable="yes">_Profile Preferences</attribute>
